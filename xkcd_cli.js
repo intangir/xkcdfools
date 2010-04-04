@@ -240,7 +240,7 @@ TerminalShell.commands['ls'] = function(terminal, path) {
 		if (obj.type == 'dir') {
 			name += '/';
 		}
-		name_list.append($('<li>').text(name));
+		name_list.append($('<li>').addClass(obj.type).text(name));
 	});
 	terminal.print(name_list);
 };

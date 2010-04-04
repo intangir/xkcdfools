@@ -15,6 +15,12 @@ p, div#display, ul { margin:0; }
 div#screen p, div#screen span, div#screen a { white-space:pre-wrap; }
 div#screen p.error { color:red; }
 div#screen li { list-style:none; }
+div#screen li.file { list-style:none; }
+div#screen li.dir { list-style:none; color:#5555ff; font-weight:bold; }
+div#screen li.exe { list-style:none; color:#55ff55; font-weight:bold; }
+div#screen li.media { list-style:none; color:#ff55ff; font-weight:bold;}
+div#screen li.movie { list-style:none; color:#ff55ff; font-weight:bold;}
+div#screen li.image { list-style:none; color:#ff55ff; font-weight:bold;}
 div#welcome { display:none; }
 h1, h2 { background-color:#FFF; color:#000; }
 h3 { color:#FFF; text-decoration:underline; margin:5px 0; }
