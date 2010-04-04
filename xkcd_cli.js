@@ -510,6 +510,10 @@ TerminalShell.commands['help'] = TerminalShell.commands['halp'] = function(termi
 	terminal.print('That would be cheating!');
 }; 
 
+TerminalShell.tabSuggestions = function() {
+    return $.extend({}, this.commands, this.pwd);
+};
+
 TerminalShell.fallback = function(terminal, cmd) {
 	oneliners = {
 		'make me a sandwich': 'What? Make it yourself.',

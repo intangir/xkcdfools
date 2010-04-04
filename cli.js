@@ -86,7 +86,35 @@ var TerminalShell = {
 			terminal.print($('<p>').addClass('error').text('An internal error occured: '+e));
 			terminal.setWorking(false);
 		}
-	}
+	},
+
+    suggestCompletion: function(terminal, segment) {
+        if(!segment)
+            return;
+
+        var suggestions = [];
+		$.each(this.tabSuggestions(), function(name) {
+            if(segment == name.substr(0,segment.length)) {
+                suggestions.push(name);
+            }
+        });
+
+        if(suggestions.length > 1)
+        {
+            terminal.print($('<p>').addClass('command').text(terminal.config.prompt + terminal.buffer));
+            suggestions.forEach(function(suggestion) {
+                terminal.print(suggestion);
+            });
+            return;            
+        } else if(suggestions[0]) {
+            return suggestions[0];
+        }
+        return;
+    },
+
+    tabSuggestions: function() {
+        return this.commands;
+    }
 };
 
 var Terminal = {
@@ -228,9 +256,10 @@ var Terminal = {
 					Terminal.setPos(Terminal.buffer.length);
 				}
 			}))
-			.bind('keydown', 'tab', function(e) {
+			.bind('keydown', 'tab', ifActive(function(e) {
 				e.preventDefault();
-			})
+    			Terminal.tabComplete();
+			}))
 			.keyup(function(e) {
 				var keyName = $.hotkeys.specialKeys[e.which];
 				if (keyName in {'ctrl':true, 'alt':true, 'scroll':true}) {
@@ -378,6 +407,26 @@ var Terminal = {
 		}
 		this.setCursorState(true);
 	},
+
+    tabComplete: function() {
+		var left = this.buffer.substr(0, this.pos);
+		var right = this.buffer.substr(this.pos, this.buffer.length - this.pos);
+        var tabbed = left.split(' ').pop();
+
+        var suggestion = TerminalShell.suggestCompletion(this, tabbed);
+        if (!suggestion) {
+            return;
+        }
+
+		this.buffer = left + suggestion.substr(tabbed.length) + right;
+		this.pos+= suggestion.length - tabbed.length;
+        if(right.length == 0) {
+            this.buffer += ' ';
+            this.pos++;
+        }
+		this.updateInputDisplay();
+		this.setCursorState(true);
+    },
 	
 	addHistory: function(cmd) {
 		this.historyPos = this.history.push(cmd);
